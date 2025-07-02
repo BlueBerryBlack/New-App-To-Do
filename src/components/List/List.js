@@ -1,18 +1,41 @@
 import styles from './List.module.scss';
 import Column from '../Column/Column';
+import { useState } from 'react';
+import shortid from 'shortid';
 
 const List = () => {
+
+    const [columns, setColumns] = useState([
+        { id: 1, title: 'Books', icon: 'book' },
+        { id: 2, title: 'Movies', icon: 'film' },
+        { id: 3, title: 'Games', icon: 'gamepad' }
+    ]);
+
+    const [value, setValue] = useState('');
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        setColumns([...columns, { id: shortid(), title: value }]);
+        setValue('');
+    };
+    
     return (
         <div className={styles.list}>
+
             <header className={styles.header} >
                 <h1 className={styles.title}>Things to do<span>soon</span></h1>
-                </header>
+            </header>
+
             <p className={styles.description}>Interesting things I want to check out</p>
+           
             <section className={styles.columns}>
-                <Column icon = 'gamepad' title='Games'/>
-                <Column icon = 'film' title='Movies'/>
-                <Column icon = 'book' title='Books'/>
+                {columns.map(column => <Column key={column.id} title={column.title} icon={column.icon} />)}
             </section>
+
+            <form onSubmit={handleSubmit}>
+                <input type="text" value={value} onChange={e=>setValue(e.target.value)}/>
+                <button>Add column</button>
+            </form>
         </div>
     );
 };
